@@ -9,5 +9,4 @@ $cfg['Servers'][$i]['auth_type'] = 'cookie';  // Can be 'cookie', 'config', 'htt
 $cfg['Servers'][$i]['AllowNoPassword'] = false;
 
 // Security settings
-$cfg['LoginCookieValidity'] = 3600;  // Cookie validity time in seconds
-?>
+// $cfg['LoginCookieValidity'] = 3600;  // Cookie validity time in seconds
