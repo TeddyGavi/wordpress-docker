@@ -1,2 +1,2 @@
 .env
-./phpmyadmin/config/config.secret.*
+./phpmyadmin/config/config.secret.inc.php
