@@ -9,7 +9,7 @@ services:
       dockerfile: ./nginx/Dockerfile
     env_file: .env
     ports:
-      - 8080:80
+      - 80:80
     volumes:
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:rw
       - wordpress:/var/www/html
