@@ -1,5 +1,10 @@
 version: "3.1"
 
+volumes:
+  DB:
+  wordpress-data:
+  wordpress-themes-dev:
+
 services:
   nginx:
     container_name: ${CONTAINER_NAME}-nginx
@@ -9,10 +14,10 @@ services:
       dockerfile: ./nginx/Dockerfile
     env_file: .env
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:rw
-      - wordpress:/var/www/html
+      - wordpress-data:/var/www/html
     networks:
       - internal
 
@@ -40,15 +45,13 @@ services:
         ]
       timeout: 20s
       retries: 10
-    ports:
-      - 3306:3306
+    expose:
+      - 3306
     volumes:
       - DB:/var/lib/mysql
     # command: "--default-authentication-plugin=mysql_native_password"
     networks:
-      internal:
-        aliases:
-          - database
+      - internal
 
   wordpress:
     depends_on:
@@ -65,8 +68,9 @@ services:
       WORDPRESS_DB_USER: "${DATABASE_USER}"
       WORDPRESS_DB_PASSWORD: "${DATABASE_PASSWORD}"
     volumes:
-      - wordpress:/var/www/html
-      - ./src:/var/www/html/wp-content/themes/${SAGE_THEME_NAME}:rw
+      - wordpress-data:/var/www/html
+      - wordpress-themes-dev:/var/www/html/wp-content/themes
+      - ./wordpress-themes:/tmp/themes
     networks:
       - internal
 
@@ -76,7 +80,6 @@ services:
     links:
       - database
     container_name: ${CONTAINER_NAME}-phpmyadmin
-    image: phpmyadmin/phpmyadmin:latest
     restart: unless-stopped
     build:
       context: .
@@ -90,17 +93,11 @@ services:
     ports:
       - 8081:80
     networks:
-      internal:
-        aliases:
-          - phpmyadmin
+      - internal
     command:
       - "sh"
       - "-c"
       - 'echo "ServerName localhost" >> /etc/apache2/apache2.conf && apache2-foreground'
-
-volumes:
-  DB:
-  wordpress:
 
 networks:
   internal:
