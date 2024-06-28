@@ -4,7 +4,7 @@ FROM wordpress:6.5.4-fpm-alpine
 RUN apk add --no-cache \
   nodejs \
   npm \
-  yarn 
+  yarn
 
 # Install Composer
 COPY ./wordpress_docker/composer_install.sh /usr/local/bin/
